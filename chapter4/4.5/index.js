@@ -1,9 +1,15 @@
 let activeEffect = null
+const effectStack = []
 function effect(fn) {
     const effectFn = () => {
         cleanup(effectFn) // 清空依赖
+        // effect嵌套的处理 *开始*
         activeEffect = effectFn
+        effectStack.push(effectFn)
         fn()
+        effectStack.pop()
+        activeEffect = effectStack[effectStack.length - 1]
+        // effect嵌套的处理 *结束*
     }
     effectFn.deps = []
     effectFn()
