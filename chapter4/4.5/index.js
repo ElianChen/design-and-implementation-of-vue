@@ -70,6 +70,12 @@ const obj = new Proxy(data, {
 })
 
 let temp1, temp2
+/*
+ * 我们希望当修改 obj.foo 时会触发 effectFn1执行。
+ * 由于 effectFn2 嵌套在 effectFn1 里，
+ * 所以会间接触发effectFn2执行，
+ * 而当修改obj.bar时，只会触发effectFn2执行。
+ * */
 effect(function effectFn1() {
     console.log('effectFn1 执行')
     effect(function effectFn2() {
@@ -78,3 +84,4 @@ effect(function effectFn1() {
     })
     temp1 = obj.foo
 })
+obj.foo = false
